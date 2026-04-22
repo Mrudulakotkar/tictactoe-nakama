@@ -39,6 +39,7 @@ function matchmakerMatched(ctx, logger, nk, matches) {
   return nk.matchCreate('tictactoe', { source: 'matchmaker' });
 }
 
+// ✅ UPDATED: label is now JSON (required for room discovery)
 function matchInit(ctx, logger, nk, params) {
   return {
     state: {
@@ -52,7 +53,11 @@ function matchInit(ctx, logger, nk, params) {
       draw: false,
     },
     tickRate: 1,
-    label: 'tic-tac-toe',
+    label: JSON.stringify({
+      mode: 'classic',
+      open: true,
+      playerCount: 0,
+    }),
   };
 }
 
@@ -86,6 +91,13 @@ function matchJoin(ctx, logger, nk, dispatcher, tick, state, presences) {
     state.status = 'playing';
   }
 
+  // ✅ UPDATED: update room label
+  dispatcher.matchLabelUpdate(JSON.stringify({
+    mode: 'classic',
+    open: Object.keys(state.players).length < 2,
+    playerCount: Object.keys(state.players).length,
+  }));
+
   broadcastState(dispatcher, state);
   return { state: state };
 }
@@ -107,6 +119,13 @@ function matchLeave(ctx, logger, nk, dispatcher, tick, state, presences) {
     state.winner = state.players[opponent] ? opponent : null;
     state.draw = !state.winner;
   }
+
+  // ✅ UPDATED: update room label
+  dispatcher.matchLabelUpdate(JSON.stringify({
+    mode: 'classic',
+    open: Object.keys(state.players).length < 2,
+    playerCount: Object.keys(state.players).length,
+  }));
 
   broadcastState(dispatcher, state);
   return { state: state };
