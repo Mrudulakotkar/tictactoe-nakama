@@ -2,9 +2,12 @@ import { Client } from "@heroiclabs/nakama-js";
 
 const client = new Client(
   "defaultkey",
-  "your-app-name.up.railway.app", // replace this
+  "tictactoe-nakama-production.up.railway.app",
   "443",
   true
 );
+
+// 🔥 IMPORTANT
+client.httpKey = "defaulthttpkey";
 
 export default client;

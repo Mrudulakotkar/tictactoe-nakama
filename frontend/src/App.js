@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as Nakama from '@heroiclabs/nakama-js';
 import './App.css';
+import client from "./nakama";
 
 const OP_CODE_STATE = 1;
 const OP_CODE_MOVE = 2;
@@ -121,7 +122,12 @@ function App() {
     if (!socket || !session) return;
 
     try {
-      const response = await client.rpc(session, 'create_tictactoe_match', {});
+      const response = await client.rpc(
+        session,
+        "create_tictactoe_match",
+        {},
+        "defaulthttpkey"
+      );
       const createdMatchId = response.payload.matchId;
 
       await socket.joinMatch(createdMatchId);
