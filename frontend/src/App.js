@@ -17,7 +17,12 @@ const emptyGame = {
 };
 
 function App() {
-  const [client] = useState(() => new Nakama.Client('defaultkey', 'localhost', '7350', false));
+  const [client] = useState(() => new Nakama.Client(
+  'defaultkey',
+  "tictactoe-nakama-production.up.railway.app", // 🔥 replace this
+  '443',
+  true
+  ));
   const [session, setSession] = useState(null);
   const [socket, setSocket] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState('Connecting');
@@ -35,7 +40,7 @@ function App() {
 
   useEffect(() => {
     let isMounted = true;
-    const nextSocket = client.createSocket(false, false);
+    const nextSocket = client.createSocket(true, false);
 
     async function connect() {
       try {
@@ -44,6 +49,7 @@ function App() {
 
         const nextSession = await client.authenticateDevice(deviceId, true);
         await nextSocket.connect(nextSession, true);
+        console.log("✅ Socket connected");
 
         nextSocket.onmatchdata = (message) => {
           const opCode = message.op_code ?? message.opCode;
@@ -256,4 +262,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
